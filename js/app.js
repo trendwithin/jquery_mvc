@@ -75,7 +75,6 @@ jQuery(function ($) {
 			list.on('keyup', '.edit', this.editKeyup.bind(this));
 			list.on('focusout', '.edit', this.update.bind(this));
 			list.on('click', '.destroy', this.destroy.bind(this));
-			this.gitIssues.bind(this);
 		},
 		render: function () {
 			var todos = this.getFilteredTodos();
@@ -209,21 +208,18 @@ jQuery(function ($) {
 		},
 
 		gitIssues: function() {
-			todos = this.todos;
 		  $.getJSON( "http://ip.jsontest.com/", function( data ) {
 		    var items = [];
 		    $.each( data, function( key, value ) {
 			    //$("<li id='" + key + "'>" + val + "</li>" ).appendTo($("#todo-list"));
 			    //this.render();
-						todos.push({
+						App.todos.push({
 							id: util.uuid(),
-							title: val,
+							title: value,
 							completed: false
 						});
 
-						$input.val('');
-
-						this.render();
+						App.render();
 		    });
     	});
 		}
