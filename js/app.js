@@ -152,24 +152,35 @@ jQuery(function ($) {
 			if (e.which !== ENTER_KEY || !$val) {
 				return;
 			}
-
-			this.todos.push({
-				id: util.uuid(),
-				title: $val,
-				completed: false
-			});
-
-			$input.val('');
-
-			this.render();
-			// make api request to create new issue
-			$.post('http://api.github.com/repos/trendwithin/jquery_mvc/issues?access_token=', JSON.stringify({ "title": $val }))
-				.done(function( data ) {
-					console.log(data);
+			$.post('http://api.github.com/repos/Tybosis/issue_tests/issues?access_token=', JSON.stringify({ "title": $val }))
+			.done(function( data ) {
+				App.todos.unshift({
+					id: data.number,
+					title: data.title,
+					completed: false
 				});
+				App.render();
+			});
+			$input.val('');
 		},
 		toggle: function (e) {
 			var i = this.indexFromEl(e.target);
+			var $status = "";
+			var $id = this.todos[i].id;
+			console.log($id);
+			if(this.todos[i].completed) {
+				$status = "open";
+			} else {
+				$status = "closed";
+			}
+			$.ajax({
+				url: "https://api.github.com/repos/Tybosis/issue_tests/issues/" + $id + "?access_token=",
+				data: JSON.stringify({ "state": $status }),
+				type: 'PATCH',
+				contentType : 'application/json',
+				processData: false,
+				dataType: 'json'
+			});
 			this.todos[i].completed = !this.todos[i].completed;
 			this.render();
 		},
@@ -190,6 +201,8 @@ jQuery(function ($) {
 			var el = e.target;
 			var $el = $(el);
 			var $val = $el.val().trim();
+			var i = this.indexFromEl(el);
+			var $id = this.todos[i].id;
 
 			if ($el.data('abort')) {
 				$el.data('abort', false);
@@ -197,7 +210,6 @@ jQuery(function ($) {
 				return;
 			}
 
-			var i = this.indexFromEl(el);
 
 			if ($val) {
 				this.todos[i].title = $val;
@@ -207,7 +219,7 @@ jQuery(function ($) {
 
 			this.render();
 			$.ajax({
-				url: 'https://api.github.com/repos/trendwithin/jquery_mvc/issues/1?access_token=',
+				url: 'https://api.github.com/repos/Tybosis/issue_tests/issues/' + $id + '?access_token=',
 				data: JSON.stringify({ "title": $val }),
 				type: 'PATCH',
 				contentType : 'application/json',
@@ -221,26 +233,30 @@ jQuery(function ($) {
 		},
 
 		gitIssues: function() {
-			    $.getJSON( 'http://api.github.com/repos/trendwithin/jquery_mvc/issues?access_token=', function( data ) {
-			      //function(data) { console.log(data); }
-			      $.each( data, function( key, value ){
-			      	$.each(value, function (k, v){
-			      		var $state = false;
-			      		if (k == "state" && v == "open"){
-			      			$state = true
-			      		}
+	    $.getJSON( 'http://api.github.com/repos/Tybosis/issue_tests/issues?state=all&access_token=', function( data ) {
+	      var $state = false;
+	      $.each( data, function( key, value ){
+      		if (value.state == "open"){
+      			$state = false;
+      		} else {
+      			$state = true;
+      		}
 
-				      App.todos.push({
-				      	id: util.uuid(),
-				      	title: value['title'].toString(),
-				      	completed:  $state
-				      });
-				     });
-				      App.render();
-				      $("h1").text("New Issue");
-				      $("#new-todo").attr("placeholder", "Open a new issue").val("").focus().blur();
-				    });
-			    });
+		      App.todos.push({
+		      	id: value.number,
+		      	title: value.title.toString(),
+		      	completed: $state
+		      });
+
+		      App.render();
+		      $("h1").text("New Issue");
+		      $("#new-todo").attr("placeholder", "Open a new issue").val("").focus().blur();
+		      $("#new-todo").on('submit', function( event ) {
+		      	var $token = ("#new-todo").val();
+		      	alert($token);
+		      });
+		    });
+	    });
    }
   };
 
