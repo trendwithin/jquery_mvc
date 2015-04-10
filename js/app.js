@@ -6,6 +6,15 @@ jQuery(function ($) {
 		return a === b ? options.fn(this) : options.inverse(this);
 	});
 
+
+	if (localStorage.getItem("TOKEN"))
+	{
+		$token = localStorage.getItem("TOKEN");
+	}
+	else{
+		var $token = prompt("Enter GitHub Token");
+		localStorage.setItem("$token", "TOKEN")
+ }
 	var ENTER_KEY = 13;
 	var ESCAPE_KEY = 27;
 
@@ -152,7 +161,7 @@ jQuery(function ($) {
 			if (e.which !== ENTER_KEY || !$val) {
 				return;
 			}
-			$.post('http://api.github.com/repos/Tybosis/issue_tests/issues?access_token=', JSON.stringify({ "title": $val }))
+			$.post('https://api.github.com/repos/trendwithin/jquery_mvc/issues?access_token=' + $token, JSON.stringify({ "title": $val }))
 			.done(function( data ) {
 				App.todos.unshift({
 					id: data.number,
@@ -174,7 +183,7 @@ jQuery(function ($) {
 				$status = "closed";
 			}
 			$.ajax({
-				url: "https://api.github.com/repos/Tybosis/issue_tests/issues/" + $id + "?access_token=",
+				url: "https://api.github.com/repos/trendwithin/jquery_mvc/issues/" + $id + "?access_token=" + $token,
 				data: JSON.stringify({ "state": $status }),
 				type: 'PATCH',
 				contentType : 'application/json',
@@ -219,7 +228,7 @@ jQuery(function ($) {
 
 			this.render();
 			$.ajax({
-				url: 'https://api.github.com/repos/Tybosis/issue_tests/issues/' + $id + '?access_token=',
+				url: 'https://api.github.com/repos/trendwithin/jquery_mvc/issues/' + $id + '?access_token=' + $token,
 				data: JSON.stringify({ "title": $val }),
 				type: 'PATCH',
 				contentType : 'application/json',
@@ -233,7 +242,7 @@ jQuery(function ($) {
 		},
 
 		gitIssues: function() {
-	    $.getJSON( 'http://api.github.com/repos/Tybosis/issue_tests/issues?state=all&access_token=', function( data ) {
+	    $.getJSON( 'https://api.github.com/repos/trendwithin/jquery_mvc/issues?state=all&access_token=' + $token, function( data ) {
 	      var $state = false;
 	      $.each( data, function( key, value ){
       		if (value.state == "open"){
@@ -247,14 +256,10 @@ jQuery(function ($) {
 		      	title: value.title.toString(),
 		      	completed: $state
 		      });
-
-		      App.render();
 		      $("h1").text("New Issue");
-		      $("#new-todo").attr("placeholder", "Open a new issue").val("").focus().blur();
-		      $("#new-todo").on('submit', function( event ) {
-		      	var $token = ("#new-todo").val();
-		      	alert($token);
-		      });
+          $("#new-todo").attr("placeholder", "Open a new issue").val("").focus().blur();
+		      App.render();
+
 		    });
 	    });
    }
