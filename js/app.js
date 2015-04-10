@@ -147,21 +147,26 @@ jQuery(function ($) {
 		},
 		create: function (e) {
 			var $input = $(e.target);
-			var val = $input.val().trim();
+			var $val = $input.val().trim();
 
-			if (e.which !== ENTER_KEY || !val) {
+			if (e.which !== ENTER_KEY || !$val) {
 				return;
 			}
 
 			this.todos.push({
 				id: util.uuid(),
-				title: val,
+				title: $val,
 				completed: false
 			});
 
 			$input.val('');
 
 			this.render();
+			// make api request to create new issue
+			$.post('http://api.github.com/repos/Tybosis/issue_tests/issues?access_token=', JSON.stringify({ "title": $val }))
+				.done(function( data ) {
+					console.log(data);
+				});
 		},
 		toggle: function (e) {
 			var i = this.indexFromEl(e.target);
@@ -208,18 +213,17 @@ jQuery(function ($) {
 		},
 
 		gitIssues: function() {
-			    $.getJSON( 'http://api.github.com/repos/trendwithin/jquery_mvc/issues?access_token={add_token}', function( data ) {
-			      //function(data) { console.log(data); }
-			      $.each( data, function( key, value ){
-				      App.todos.push({
-				      	id: util.uuid(),
-				      	title: value['body'].toString(),
-				      	completed: false
-				      });
-				      App.render();
-				    });
-			    });
-   }
+	    $.getJSON( 'http://api.github.com/repos/Tybosis/issue_tests/issues?access_token=', function( data ) {
+	      $.each( data, function( key, value ){
+		      App.todos.push({
+		      	id: util.uuid(),
+		      	title: value['title'].toString(),
+		      	completed: false
+		      });
+		      App.render();
+		    });
+	    });
+   	}
   };
 
 	App.init();
