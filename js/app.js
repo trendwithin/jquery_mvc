@@ -208,14 +208,14 @@ jQuery(function ($) {
 		},
 
 		gitIssues: function() {
-		  $.getJSON( "http://ip.jsontest.com/", function( data ) {
+		  $.getJSON( "https://api.github.com/repos/Tybosis/portfolio/issues", function( data ) {
 		    var items = [];
 		    $.each( data, function( key, value ) {
 			    //$("<li id='" + key + "'>" + val + "</li>" ).appendTo($("#todo-list"));
 			    //this.render();
 						App.todos.push({
 							id: util.uuid(),
-							title: value,
+							title: value['body'].toString(),
 							completed: false
 						});
 
