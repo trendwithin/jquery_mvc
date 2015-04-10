@@ -152,44 +152,37 @@ jQuery(function ($) {
 			if (e.which !== ENTER_KEY || !$val) {
 				return;
 			}
-
-			this.todos.push({
-				id: util.uuid(),
-				title: $val,
-				completed: false
-			});
-
-			$input.val('');
-
-			this.render();
-			// make api request to create new issue
-			$.post('http://api.github.com/repos/trendwithin/jquery_mvc/issues?access_token=', JSON.stringify({ "title": $val }))
-				.done(function( data ) {
+			$.post('http://api.github.com/repos/Tybosis/issue_tests/issues?access_token=', JSON.stringify({ "title": $val }))
+			.done(function( data ) {
+				App.todos.unshift({
+					id: data.number,
+					title: data.title,
+					completed: false
 				});
+				App.render();
+			});
+			$input.val('');
 		},
 		toggle: function (e) {
 			var i = this.indexFromEl(e.target);
-			//this.todos[i].completed = !this.todos[i].completed;
-			$(this.todos).each(function() {
-				if (this.todos[i].completed) {
-				this.todos.completed = !this.todos.completed;
-			  }
-			});
-			this.render();
 			var $status = "";
+			var $id = this.todos[i].id;
+			console.log($id);
 			if(this.todos[i].completed) {
-				$status = "closed";
-			} else {
 				$status = "open";
+			} else {
+				$status = "closed";
 			}
 			$.ajax({
-				url: 'https://api.github.com/repos/Tybosis/issue_tests/issues/1?access_token=8a2e26141f005a5052a56f8a53d9c8425c344302',
+				url: "https://api.github.com/repos/Tybosis/issue_tests/issues/" + $id + "?access_token=",
 				data: JSON.stringify({ "state": $status }),
 				type: 'PATCH',
 				contentType : 'application/json',
 				processData: false,
 				dataType: 'json'
 			});
+			this.todos[i].completed = !this.todos[i].completed;
+			this.render();
 		},
 		edit: function (e) {
 			var $input = $(e.target).closest('li').addClass('editing').find('.edit');
@@ -208,6 +201,8 @@ jQuery(function ($) {
 			var el = e.target;
 			var $el = $(el);
 			var $val = $el.val().trim();
+			var i = this.indexFromEl(el);
+			var $id = this.todos[i].id;
 
 			if ($el.data('abort')) {
 				$el.data('abort', false);
@@ -215,7 +210,6 @@ jQuery(function ($) {
 				return;
 			}
 
-			var i = this.indexFromEl(el);
 
 			if ($val) {
 				this.todos[i].title = $val;
@@ -225,8 +219,8 @@ jQuery(function ($) {
 
 			this.render();
 			$.ajax({
-				url: 'https://api.github.com/repos/Tybosis/issue_tests/issues/1?access_token=8a2e26141f005a5052a56f8a53d9c8425c344302',
-				data: JSON.stringify({ "title": $val, "state": "closed" }),
+				url: 'https://api.github.com/repos/Tybosis/issue_tests/issues/' + $id + '?access_token=',
+				data: JSON.stringify({ "title": $val }),
 				type: 'PATCH',
 				contentType : 'application/json',
 				processData: false,
@@ -239,24 +233,28 @@ jQuery(function ($) {
 		},
 
 		gitIssues: function() {
-	    $.getJSON( 'http://api.github.com/repos/trendwithin/jquery_mvc/issues?state=all&access_token=', function( data ) {
+	    $.getJSON( 'http://api.github.com/repos/Tybosis/issue_tests/issues?state=all&access_token=', function( data ) {
 	      var $state = false;
 	      $.each( data, function( key, value ){
-
       		if (value.state == "open"){
+      			$state = false;
+      		} else {
       			$state = true;
-      			console.log($state);
       		}
 
 		      App.todos.push({
-		      	id: util.uuid(),
-		      	title: value['title'].toString(),
-		      	completed:  $state
+		      	id: value.number,
+		      	title: value.title.toString(),
+		      	completed: $state
 		      });
 
 		      App.render();
 		      $("h1").text("New Issue");
 		      $("#new-todo").attr("placeholder", "Open a new issue").val("").focus().blur();
+		      $("#new-todo").on('submit', function( event ) {
+		      	var $token = ("#new-todo").val();
+		      	alert($token);
+		      });
 		    });
 	    });
    }
