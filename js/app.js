@@ -184,7 +184,7 @@ jQuery(function ($) {
 		update: function (e) {
 			var el = e.target;
 			var $el = $(el);
-			var val = $el.val().trim();
+			var $val = $el.val().trim();
 
 			if ($el.data('abort')) {
 				$el.data('abort', false);
@@ -194,13 +194,25 @@ jQuery(function ($) {
 
 			var i = this.indexFromEl(el);
 
-			if (val) {
-				this.todos[i].title = val;
+			if ($val) {
+				this.todos[i].title = $val;
 			} else {
 				this.todos.splice(i, 1);
 			}
 
 			this.render();
+			$.ajax({
+				url: 'https://api.github.com/repos/trendwithin/jquery_mvc/issues/1?access_token=',
+				data: JSON.stringify({ "title": $val }),
+				type: 'PATCH',
+				contentType : 'application/json',
+				processData: false,
+				dataType: 'json'
+			});
+			//$.patch( 'http://api.github.com/repos/trendwithin/jquery_mvc/issues?access_token=', JSON.stringify({ "title": $val }))
+			//.done(function( data ){
+			//	console.log(data);
+			//});
 		},
 		destroy: function (e) {
 			this.todos.splice(this.indexFromEl(e.target), 1);
@@ -208,7 +220,7 @@ jQuery(function ($) {
 		},
 
 		gitIssues: function() {
-			    $.getJSON( 'http://api.github.com/repos/trendwithin/jquery_mvc/issues?access_token={add_token}', function( data ) {
+			    $.getJSON( 'http://api.github.com/repos/trendwithin/jquery_mvc/issues?access_token=', function( data ) {
 			      //function(data) { console.log(data); }
 			      $.each( data, function( key, value ){
 				      App.todos.push({
