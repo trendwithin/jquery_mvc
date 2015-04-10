@@ -208,22 +208,19 @@ jQuery(function ($) {
 		},
 
 		gitIssues: function() {
-		  $.getJSON( "http://ip.jsontest.com/", function( data ) {
-		    var items = [];
-		    $.each( data, function( key, value ) {
-			    //$("<li id='" + key + "'>" + val + "</li>" ).appendTo($("#todo-list"));
-			    //this.render();
-						App.todos.push({
-							id: util.uuid(),
-							title: value,
-							completed: false
-						});
-
-						App.render();
-		    });
-    	});
-		}
-	};
+			    $.getJSON( 'http://api.github.com/repos/trendwithin/jquery_mvc/issues?access_token={add_token}', function( data ) {
+			      //function(data) { console.log(data); }
+			      $.each( data, function( key, value ){
+				      App.todos.push({
+				      	id: util.uuid(),
+				      	title: value['body'].toString(),
+				      	completed: false
+				      });
+				      App.render();
+				    });
+			    });
+   }
+  };
 
 	App.init();
 });
