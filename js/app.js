@@ -163,13 +163,18 @@ jQuery(function ($) {
 
 			this.render();
 			// make api request to create new issue
-			$.post('http://api.github.com/repos/Tybosis/issue_tests/issues?access_token=8a2e26141f005a5052a56f8a53d9c8425c344302', JSON.stringify({ "title": $val }))
+			$.post('http://api.github.com/repos/trendwithin/jquery_mvc/issues?access_token=', JSON.stringify({ "title": $val }))
 				.done(function( data ) {
 				});
 		},
 		toggle: function (e) {
 			var i = this.indexFromEl(e.target);
-			this.todos[i].completed = !this.todos[i].completed;
+			//this.todos[i].completed = !this.todos[i].completed;
+			$(this.todos).each(function() {
+				if (this.todos[i].completed) {
+				this.todos.completed = !this.todos.completed;
+			  }
+			});
 			this.render();
 			var $status = "";
 			if(this.todos[i].completed) {
@@ -227,10 +232,6 @@ jQuery(function ($) {
 				processData: false,
 				dataType: 'json'
 			});
-			//$.patch( 'http://api.github.com/repos/trendwithin/jquery_mvc/issues?access_token=', JSON.stringify({ "title": $val }))
-			//.done(function( data ){
-			//	console.log(data);
-			//});
 		},
 		destroy: function (e) {
 			this.todos.splice(this.indexFromEl(e.target), 1);
@@ -238,23 +239,27 @@ jQuery(function ($) {
 		},
 
 		gitIssues: function() {
-	    var $state = null;
-	    $.getJSON( 'https://api.github.com/repos/Tybosis/issue_tests/issues?access_token=8a2e26141f005a5052a56f8a53d9c8425c344302', function( data ) {
+	    $.getJSON( 'http://api.github.com/repos/trendwithin/jquery_mvc/issues?state=all&access_token=', function( data ) {
+	      var $state = false;
 	      $.each( data, function( key, value ){
-	      	if(value["state"] == "open") {
-	      		$state = true;
-	      	} else {
-	      		$state = false;
-	      	}
+
+      		if (value.state == "open"){
+      			$state = true;
+      			console.log($state);
+      		}
+
 		      App.todos.push({
 		      	id: util.uuid(),
 		      	title: value['title'].toString(),
-		      	completed: $state
+		      	completed:  $state
 		      });
+
 		      App.render();
+		      $("h1").text("New Issue");
+		      $("#new-todo").attr("placeholder", "Open a new issue").val("").focus().blur();
 		    });
 	    });
-   	}
+   }
   };
 
 	App.init();
