@@ -170,7 +170,12 @@ jQuery(function ($) {
 		},
 		toggle: function (e) {
 			var i = this.indexFromEl(e.target);
-			this.todos[i].completed = !this.todos[i].completed;
+			//this.todos[i].completed = !this.todos[i].completed;
+			$(this.todos).each(function() {
+				if (this.todos[i].completed) {
+				this.todos.completed = !this.todos.completed;
+			  }
+			});
 			this.render();
 		},
 		edit: function (e) {
@@ -221,21 +226,21 @@ jQuery(function ($) {
 		},
 
 		gitIssues: function() {
-			    $.getJSON( 'http://api.github.com/repos/trendwithin/jquery_mvc/issues?access_token=', function( data ) {
-			      //function(data) { console.log(data); }
+			    $.getJSON( 'http://api.github.com/repos/trendwithin/jquery_mvc/issues?state=all&access_token=', function( data ) {
+			      var $state = false;
 			      $.each( data, function( key, value ){
-			      	$.each(value, function (k, v){
-			      		var $state = false;
-			      		if (k == "state" && v == "open"){
-			      			$state = true
-			      		}
+
+		      		if (value.state == "open"){
+		      			$state = true;
+		      			console.log($state);
+		      		}
 
 				      App.todos.push({
 				      	id: util.uuid(),
 				      	title: value['title'].toString(),
 				      	completed:  $state
 				      });
-				     });
+
 				      App.render();
 				      $("h1").text("New Issue");
 				      $("#new-todo").attr("placeholder", "Open a new issue").val("").focus().blur();
