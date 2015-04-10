@@ -43,6 +43,7 @@ jQuery(function ($) {
 			this.todos = util.store('todos-jquery');
 			this.cacheElements();
 			this.bindEvents();
+			this.gitIssues();
 
 			Router({
 				'/:filter': function (filter) {
@@ -204,6 +205,23 @@ jQuery(function ($) {
 		destroy: function (e) {
 			this.todos.splice(this.indexFromEl(e.target), 1);
 			this.render();
+		},
+
+		gitIssues: function() {
+		  $.getJSON( "http://ip.jsontest.com/", function( data ) {
+		    var items = [];
+		    $.each( data, function( key, value ) {
+			    //$("<li id='" + key + "'>" + val + "</li>" ).appendTo($("#todo-list"));
+			    //this.render();
+						App.todos.push({
+							id: util.uuid(),
+							title: value,
+							completed: false
+						});
+
+						App.render();
+		    });
+    	});
 		}
 	};
 
