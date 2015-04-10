@@ -163,7 +163,7 @@ jQuery(function ($) {
 
 			this.render();
 			// make api request to create new issue
-			$.post('http://api.github.com/repos/Tybosis/issue_tests/issues?access_token=', JSON.stringify({ "title": $val }))
+			$.post('http://api.github.com/repos/trendwithin/jquery_mvc/issues?access_token=', JSON.stringify({ "title": $val }))
 				.done(function( data ) {
 					console.log(data);
 				});
@@ -214,10 +214,6 @@ jQuery(function ($) {
 				processData: false,
 				dataType: 'json'
 			});
-			//$.patch( 'http://api.github.com/repos/trendwithin/jquery_mvc/issues?access_token=', JSON.stringify({ "title": $val }))
-			//.done(function( data ){
-			//	console.log(data);
-			//});
 		},
 		destroy: function (e) {
 			this.todos.splice(this.indexFromEl(e.target), 1);
@@ -228,12 +224,21 @@ jQuery(function ($) {
 			    $.getJSON( 'http://api.github.com/repos/trendwithin/jquery_mvc/issues?access_token=', function( data ) {
 			      //function(data) { console.log(data); }
 			      $.each( data, function( key, value ){
+			      	$.each(value, function (k, v){
+			      		var $state = false;
+			      		if (k == "state" && v == "open"){
+			      			$state = true
+			      		}
+
 				      App.todos.push({
 				      	id: util.uuid(),
-				      	title: value['body'].toString(),
-				      	completed: false
+				      	title: value['title'].toString(),
+				      	completed:  $state
 				      });
+				     });
 				      App.render();
+				      $("h1").text("New Issue");
+				      $("#new-todo").attr("placeholder", "Open a new issue").val("").focus().blur();
 				    });
 			    });
    }
