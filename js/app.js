@@ -9,6 +9,8 @@ jQuery(function ($) {
 	var ENTER_KEY = 13;
 	var ESCAPE_KEY = 27;
 
+	var TOKEN = prompt("Please enter your access token:");
+
 	var util = {
 		uuid: function () {
 			/*jshint bitwise:false */
@@ -152,7 +154,7 @@ jQuery(function ($) {
 			if (e.which !== ENTER_KEY || !$val) {
 				return;
 			}
-			$.post('http://api.github.com/repos/Tybosis/issue_tests/issues?access_token=', JSON.stringify({ "title": $val }))
+			$.post('https://api.github.com/repos/Tybosis/issue_tests/issues?access_token=' + TOKEN, JSON.stringify({ "title": $val }))
 			.done(function( data ) {
 				App.todos.unshift({
 					id: data.number,
@@ -174,7 +176,7 @@ jQuery(function ($) {
 				$status = "closed";
 			}
 			$.ajax({
-				url: "https://api.github.com/repos/Tybosis/issue_tests/issues/" + $id + "?access_token=",
+				url: "https://api.github.com/repos/Tybosis/issue_tests/issues/" + $id + "?access_token=" + TOKEN,
 				data: JSON.stringify({ "state": $status }),
 				type: 'PATCH',
 				contentType : 'application/json',
@@ -219,7 +221,7 @@ jQuery(function ($) {
 
 			this.render();
 			$.ajax({
-				url: 'https://api.github.com/repos/Tybosis/issue_tests/issues/' + $id + '?access_token=',
+				url: 'https://api.github.com/repos/Tybosis/issue_tests/issues/' + $id + '?access_token=' + TOKEN,
 				data: JSON.stringify({ "title": $val }),
 				type: 'PATCH',
 				contentType : 'application/json',
@@ -233,7 +235,10 @@ jQuery(function ($) {
 		},
 
 		gitIssues: function() {
-	    $.getJSON( 'http://api.github.com/repos/Tybosis/issue_tests/issues?state=all&access_token=', function( data ) {
+			if(this.todos.length) {
+				return;
+			}
+	    $.getJSON( 'https://api.github.com/repos/Tybosis/issue_tests/issues?state=all&access_token=' + TOKEN, function( data ) {
 	      var $state = false;
 	      $.each( data, function( key, value ){
       		if (value.state == "open"){
