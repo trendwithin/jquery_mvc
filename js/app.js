@@ -169,7 +169,6 @@ jQuery(function ($) {
 			var i = this.indexFromEl(e.target);
 			var $status = "";
 			var $id = this.todos[i].id;
-			console.log($id);
 			if(this.todos[i].completed) {
 				$status = "open";
 			} else {
@@ -256,13 +255,9 @@ jQuery(function ($) {
 		      App.render();
 		      $("h1").text("New Issue");
 		      $("#new-todo").attr("placeholder", "Open a new issue").val("").focus().blur();
-		      $("#new-todo").on('submit', function( event ) {
-		      	var $token = ("#new-todo").val();
-		      	alert($token);
-		      });
 		    });
 	    });
-   }
+   	}
   };
 
 	App.init();
