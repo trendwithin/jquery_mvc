@@ -1,33 +1,24 @@
-# jQuery TodoMVC Example
+# Github Issue Tracker with TodoMVC
 
-> jQuery is a fast, small, and feature-rich JavaScript library. It makes things like HTML document traversal and manipulation, event handling, animation, and Ajax much simpler with an easy-to-use API that works across a multitude of browsers. With a combination of versatility and extensibility, jQuery has changed the way that millions of people write JavaScript.
+by Tyler Pottle and Michael Becco
 
-> _[jQuery - jquery.com](http://jquery.com)_
+## Description
 
+This project is a simple todo-list-style tracker for github issues, using
+the existing architecture of the jQuery implementation of the
+[TodoMVC](https://github.com/tastejs/todomvc) project.
 
-## Learning jQuery
+## Use
 
-The [jQuery website](http://jquery.com) is a great resource for getting started.
-
-Here are some links you may find helpful:
-
-* [How jQuery Works](http://learn.jquery.com/about-jquery/how-jquery-works)
-* [API Reference](http://api.jquery.com)
-* [Plugins](http://plugins.jquery.com)
-* [Browser Support](http://jquery.com/browser-support)
-* [Blog](http://blog.jquery.com)
-
-Articles and guides from the community:
-
-* [Try jQuery](http://try.jquery.com)
-* [jQuery Annotated Source](http://github.com/robflaherty/jquery-annotated-source)
-* [10 Things I Learned From the jQuery Source](http://paulirish.com/2010/10-things-i-learned-from-the-jquery-source)
-
-Get help from other jQuery users:
-
-* [jQuery on StackOverflow](http://stackoverflow.com/questions/tagged/jquery)
-* [Forums](http://forum.jquery.com)
-* [jQuery on Twitter](http://twitter.com/jquery)
-* [jQuery on Google +](https://plus.google.com/102828491884671003608/posts)
-
-_If you have other helpful links to share, or find any of the links above no longer work, please [let us know](https://github.com/tastejs/todomvc/issues)._
+This app is hardcoded to only track issues for my portfolio project for my
+Github profile, however this project could be updated to allow a user to enter
+their own github profile name and a particular repo with a little extra work.
+For now, when I load the page, a prompt appears to enter my secret authorization
+token.  Then, the issues from the portfolio project will all appear on the
+todo list.  From here, issues can be created, existing issues can be edited and
+switched from open to closed.  The list can also be filtered by open issues,
+closed issues, or the default of all issues.  We decided to remove the ability
+to delete issues because issues aren't designed to be deleted from Github, and
+also the ability to toggle issues either open or closed all at once was taken
+out, because I didn't see a scenario where I would want to open or close every
+issue for my portfolio project all at once.
